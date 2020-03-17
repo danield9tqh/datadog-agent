@@ -6,6 +6,14 @@ import (
 	"github.com/DataDog/datadog-agent/pkg/util/log"
 )
 
+const (
+	ContainerNameTagKey    = "container_name"
+	AppInstanceGUIDTagKey  = "app_instance_guid"
+	AppNameTagKey          = "app_name"
+	AppInstanceIndexTagKey = "app_instance_index"
+	AppGUIDTagKey          = "app_guid"
+)
+
 func (c *GardenCollector) extractTags(nodename string) (tagsByInstanceGUID map[string][]string, err error) {
 	if c.clusterAgentEnabled {
 		tagsByInstanceGUID, err = c.dcaClient.GetCFAppsMetadataForNode(nodename)
@@ -21,8 +29,8 @@ func (c *GardenCollector) extractTags(nodename string) (tagsByInstanceGUID map[s
 		tagsByInstanceGUID = make(map[string][]string, len(gardenContainers))
 		for _, gardenContainer := range gardenContainers {
 			tagsByInstanceGUID[gardenContainer.Handle()] = []string{
-				fmt.Sprintf("container_name:%s", gardenContainer.Handle()),
-				fmt.Sprintf("app_instance_guid:%s", gardenContainer.Handle()),
+				fmt.Sprintf("%s:%s", ContainerNameTagKey, gardenContainer.Handle()),
+				fmt.Sprintf("%s:%s", AppInstanceGUIDTagKey, gardenContainer.Handle()),
 			}
 		}
 	}

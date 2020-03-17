@@ -25,6 +25,12 @@ const (
 	EnvVcapApplicationName = "VCAP_APPLICATION"
 	// ActualLrpStateRunning is the value for the running state o LRP
 	ActualLrpStateRunning = "RUNNING"
+	// ApplicationNameKey is the name of the key containing the app name in the env var VCAP_APPLICATION
+	ApplicationNameKey = "application_name"
+)
+
+var (
+	envVcapApplicationKeys = []string{ApplicationNameKey}
 )
 
 // ADConfig represents the structure of ADConfig in AD_DATADOGHQ_COM environment variable
@@ -224,6 +230,7 @@ func getVcapApplicationMap(vcap string) (map[string]interface{}, error) {
 	// VCAP_APPLICATION describes the application
 	// e.g. {"application_id": "...", "application_name": "...", ...
 	var vcMap map[string]interface{}
+	var res map[string]interface{}
 	if vcap == "" {
 		return vcMap, nil
 	}
@@ -231,6 +238,15 @@ func getVcapApplicationMap(vcap string) (map[string]interface{}, error) {
 	err := json.Unmarshal([]byte(vcap), &vcMap)
 	if err != nil {
 		return vcMap, err
+	}
+
+	// Keep only needed keys
+	for _, key := range envVcapApplicationKeys {
+		val, ok := vcMap[key]
+		if !ok {
+			return vcMap, fmt.Errorf("could not find key %s in VCAP_APPLICATION env var", key)
+		}
+		res[key] = val
 	}
 
 	return vcMap, nil
