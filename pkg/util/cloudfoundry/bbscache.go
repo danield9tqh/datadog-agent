@@ -17,8 +17,20 @@ import (
 	"code.cloudfoundry.org/bbs/models"
 	"code.cloudfoundry.org/lager"
 
-	"github.com/DataDog/datadog-agent/pkg/tagger/collectors"
 	"github.com/DataDog/datadog-agent/pkg/util/log"
+)
+
+const (
+	// ContainerNameTagKey
+	ContainerNameTagKey = "container_name"
+	// AppInstanceGUIDTagKey
+	AppInstanceGUIDTagKey = "app_instance_guid"
+	// AppNameTagKey
+	AppNameTagKey = "app_name"
+	// AppInstanceIndexTagKey
+	AppInstanceIndexTagKey = "app_instance_index"
+	// AppGUIDTagKey
+	AppGUIDTagKey = "app_guid"
 )
 
 // BBSCacheI is an interface for a structure that caches and automatically refreshes data from Cloud Foundry BBS API
@@ -291,11 +303,11 @@ func (bc *BBSCache) extractNodeTags(nodeActualLRPs []*ActualLRP, desiredLRPsByAp
 			continue
 		}
 		tags[alrp.InstanceGUID] = []string{
-			fmt.Sprintf("%s:%s_%d", collectors.ContainerNameTagKey, appName, alrp.Index),
-			fmt.Sprintf("%s:%s", collectors.AppNameTagKey, appName),
-			fmt.Sprintf("%s:%s", collectors.AppGUIDTagKey, alrp.AppGUID),
-			fmt.Sprintf("%s:%d", collectors.AppInstanceIndexTagKey, alrp.Index),
-			fmt.Sprintf("%s:%s", collectors.AppInstanceGUIDTagKey, alrp.InstanceGUID),
+			fmt.Sprintf("%s:%s_%d", ContainerNameTagKey, appName, alrp.Index),
+			fmt.Sprintf("%s:%s", AppNameTagKey, appName),
+			fmt.Sprintf("%s:%s", AppGUIDTagKey, alrp.AppGUID),
+			fmt.Sprintf("%s:%d", AppInstanceIndexTagKey, alrp.Index),
+			fmt.Sprintf("%s:%s", AppInstanceGUIDTagKey, alrp.InstanceGUID),
 		}
 	}
 	return tags

@@ -3,15 +3,8 @@ package collectors
 import (
 	"fmt"
 
+	"github.com/DataDog/datadog-agent/pkg/util/cloudfoundry"
 	"github.com/DataDog/datadog-agent/pkg/util/log"
-)
-
-const (
-	ContainerNameTagKey    = "container_name"
-	AppInstanceGUIDTagKey  = "app_instance_guid"
-	AppNameTagKey          = "app_name"
-	AppInstanceIndexTagKey = "app_instance_index"
-	AppGUIDTagKey          = "app_guid"
 )
 
 func (c *GardenCollector) extractTags(nodename string) (tagsByInstanceGUID map[string][]string, err error) {
@@ -29,8 +22,8 @@ func (c *GardenCollector) extractTags(nodename string) (tagsByInstanceGUID map[s
 		tagsByInstanceGUID = make(map[string][]string, len(gardenContainers))
 		for _, gardenContainer := range gardenContainers {
 			tagsByInstanceGUID[gardenContainer.Handle()] = []string{
-				fmt.Sprintf("%s:%s", ContainerNameTagKey, gardenContainer.Handle()),
-				fmt.Sprintf("%s:%s", AppInstanceGUIDTagKey, gardenContainer.Handle()),
+				fmt.Sprintf("%s:%s", cloudfoundry.ContainerNameTagKey, gardenContainer.Handle()),
+				fmt.Sprintf("%s:%s", cloudfoundry.AppInstanceGUIDTagKey, gardenContainer.Handle()),
 			}
 		}
 	}
