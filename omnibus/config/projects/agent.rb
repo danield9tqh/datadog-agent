@@ -160,7 +160,7 @@ if linux?
 end
 
 # creates required build directories
-dependency 'datadog-agent-prepare'
+# dependency 'datadog-agent-prepare'
 
 # Datadog agent
 dependency 'datadog-agent'
